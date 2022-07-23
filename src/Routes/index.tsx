@@ -1,12 +1,17 @@
 import { useRoutes } from 'react-router';
-import MainLayout from '../layouts/MainLayout';
+import DashboardLayout from '../layouts/DashboardLayout';
+import Login from '../pages/Login';
 import { routes } from './routes';
 
 export default function Routes() {
   return useRoutes([
     {
-      element: <MainLayout />,
+      element: <DashboardLayout />,
       children: routes
+    },
+    {
+      path: '/',
+      element: <Login />
     }
   ])
 }

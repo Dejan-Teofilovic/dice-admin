@@ -14,7 +14,7 @@ import {
   Theme
 } from "@mui/material"
 import { Icon } from '@iconify/react'
-import { routes } from "../Routes/routes";
+import { routes } from "../../Routes/routes";
 
 const drawerWidth = 240;
 

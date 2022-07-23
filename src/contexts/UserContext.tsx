@@ -2,12 +2,10 @@ import React, { createContext, useContext, useEffect, useReducer } from 'react';
 import api from '../utils/api';
 import {
   ERROR,
-  INFO,
   LOCALSTORAGE_TOKEN_NAME,
   MESSAGE_LOGIN_ERROR,
   MESSAGE_LOGIN_SUCCESS,
   SUCCESS,
-  WARNING
 } from '../utils/constants';
 import { getItemOfLocalStorage, setAuthToken, setItemOfLocalStorage } from '../utils/functions';
 import { ILoginInfo } from '../utils/interfaces';
@@ -50,7 +48,7 @@ const reducer = (state: object, action: IAction) =>
 //  Context
 const UserContext = createContext({
   ...initialState,
-  login: () => Promise.resolve(),
+  login: (loginInfo: ILoginInfo) => Promise.resolve(),
 });
 
 //  Provider
@@ -71,6 +69,7 @@ function UserProvider({ children }: IProps) {
   }, [])
 
   const login = (loginInfo: ILoginInfo) => {
+    console.log('# loginInfo => ', loginInfo)
     openLoading()
     api.post('/auth/login', loginInfo)
       .then(response => {
