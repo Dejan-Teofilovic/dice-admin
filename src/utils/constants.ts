@@ -11,3 +11,5 @@ export const LOCALSTORAGE_TOKEN_NAME = "token";
 
 export const MESSAGE_LOGIN_SUCCESS = "Login success.";
 export const MESSAGE_LOGIN_ERROR = "Login error.";
+
+export const NO_DATA = "No Data.";

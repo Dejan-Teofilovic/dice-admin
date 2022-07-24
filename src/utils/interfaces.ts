@@ -9,3 +9,9 @@ export interface ILoginInfo {
   email: string;
   password: string;
 }
+
+export interface IWaitListItem {
+  id: number;
+  email: string;
+  wallet_address: string;
+}

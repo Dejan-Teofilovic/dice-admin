@@ -1,16 +1,18 @@
 import { Navigate, useLocation } from 'react-router-dom';
-import useUser from '../hooks/useUser';
+import { LOCALSTORAGE_TOKEN_NAME } from '../utils/constants';
+import { getItemOfLocalStorage } from '../utils/functions';
 
 interface IProps {
   children: any;
 }
 
+const token = getItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME);
+
 export default function AuthGuard({ children }: IProps) {
-  const { token } = useUser();
   const { pathname } = useLocation();
-  
+
   if (token) {
-    if(pathname === '/login') {
+    if (pathname === '/login') {
       return <Navigate to="/" replace />;
     }
     return <>{children}</>;

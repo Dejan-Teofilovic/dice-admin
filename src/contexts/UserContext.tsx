@@ -70,7 +70,7 @@ function UserProvider({ children }: IProps) {
       count += 1;
       console.log('# tokenOfLocalStorage => ', tokenOfLocalStorage)
       setAuthToken(tokenOfLocalStorage)
-      api.get('/auth/check-expiration-of-token')
+      api.get('/admin/check-expiration-of-token')
         .then(response => {
           dispatch({
             type: 'SET_TOKEN',
@@ -90,7 +90,7 @@ function UserProvider({ children }: IProps) {
 
   const login = (loginInfo: ILoginInfo) => {
     openLoading()
-    api.post('/auth/login', loginInfo)
+    api.post('/admin/login', loginInfo)
       .then(response => {
         if (response.data) {
           setItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME, response.data)
