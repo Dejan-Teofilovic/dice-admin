@@ -1,7 +1,7 @@
 import api from "./api";
 import { STRING } from "./constants";
 
-export const setItemOfLocalStorage = (name = "x", data = "x") => {
+export const setItemOfLocalStorage = (name: string, data: string) => {
   if (typeof data === STRING) {
     localStorage.setItem(name, data);
   } else {
@@ -9,15 +9,15 @@ export const setItemOfLocalStorage = (name = "x", data = "x") => {
   }
 };
 
-export const getItemOfLocalStorage = (name = "x"): string | null => {
+export const getItemOfLocalStorage = (name: string): string | null => {
   return localStorage.getItem(name);
 };
 
-export const removeItemOfLocalStorage = (name = "x") => {
+export const removeItemOfLocalStorage = (name: string) => {
   localStorage.removeItem(name);
 };
 
-export const setAuthToken = (token: string) => {
+export const setAuthToken = (token: string | null) => {
   if (token) {
     api.defaults.headers.common["x-auth-token"] = token;
     localStorage.setItem("token", token);

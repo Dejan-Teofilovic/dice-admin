@@ -18,6 +18,6 @@ export const routes: Array<IRoute> = [
   },
   {
     path: '*',
-    element: <Navigate to="/" />
+    element: <Navigate to="/waiting-list" />
   }
 ]

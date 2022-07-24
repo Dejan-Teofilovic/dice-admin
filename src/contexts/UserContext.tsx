@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useReducer } from 'react';
+import { createContext, useContext, useEffect, useReducer } from 'react';
 import api from '../utils/api';
 import {
   ERROR,
@@ -7,7 +7,12 @@ import {
   MESSAGE_LOGIN_SUCCESS,
   SUCCESS,
 } from '../utils/constants';
-import { getItemOfLocalStorage, setAuthToken, setItemOfLocalStorage } from '../utils/functions';
+import { 
+  getItemOfLocalStorage, 
+  removeItemOfLocalStorage, 
+  setAuthToken, 
+  setItemOfLocalStorage 
+} from '../utils/functions';
 import { ILoginInfo } from '../utils/interfaces';
 import { AlertMessageContext } from './AlertMessageContext';
 import { LoadingContext } from './LoadingContext';
@@ -32,6 +37,8 @@ interface IHandlers {
 const initialState = {
   token: ''
 };
+
+let count = 0;
 
 const handlers: IHandlers = {
   SET_TOKEN: (state: object, action: IAction) => {
@@ -58,26 +65,38 @@ function UserProvider({ children }: IProps) {
   const { openLoading, closeLoading } = useContext(LoadingContext);
 
   useEffect(() => {
-    let tokenOfLocalStorage = getItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME)
-    if (tokenOfLocalStorage) {
+    let tokenOfLocalStorage = getItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME);
+    if (tokenOfLocalStorage && count === 0) {
+      count += 1;
+      console.log('# tokenOfLocalStorage => ', tokenOfLocalStorage)
       setAuthToken(tokenOfLocalStorage)
-      dispatch({
-        type: 'SET_TOKEN',
-        payload: tokenOfLocalStorage
-      })
+      api.get('/auth/check-expiration-of-token')
+        .then(response => {
+          dispatch({
+            type: 'SET_TOKEN',
+            payload: tokenOfLocalStorage
+          })
+        })
+        .catch(error => {
+          setAuthToken(null)
+          dispatch({
+            type: 'SET_TOKEN',
+            payload: ''
+          })
+          removeItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME)
+        })
     }
   }, [])
 
   const login = (loginInfo: ILoginInfo) => {
-    console.log('# loginInfo => ', loginInfo)
     openLoading()
     api.post('/auth/login', loginInfo)
       .then(response => {
         if (response.data) {
-          setItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME, response.data.token)
+          setItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME, response.data)
           dispatch({
             type: 'SET_TOKEN',
-            payload: response.data.token
+            payload: response.data
           })
           closeLoading()
           openAlert({ severity: SUCCESS, message: MESSAGE_LOGIN_SUCCESS })

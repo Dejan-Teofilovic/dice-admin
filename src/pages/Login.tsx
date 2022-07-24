@@ -1,16 +1,24 @@
 import { Button, Card, CardContent, CardHeader, Stack, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useUser from "../hooks/useUser";
 
 export default function Login() {
-  const { login } = useUser()
+  const navigate = useNavigate()
+  const { login, token } = useUser()
 
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
 
   const handleSubmit = () => {
-    login({ email, password });
+    login({ email, password })
   }
+
+  // useEffect(() => {
+  //   if (token) {
+  //     navigate('/')
+  //   }
+  // }, [token])
 
   return (
     <Stack height="100vh" justifyContent="center" alignItems="center">
