@@ -5,7 +5,7 @@ import { IRoute } from "../utils/interfaces";
 
 export const routes: Array<IRoute> = [
   {
-    name: 'Waiting Lists',
+    name: 'Waiting List',
     icon: 'fluent:document-bullet-list-clock-24-filled',
     path: '/waiting-list',
     element: <WaitingList />

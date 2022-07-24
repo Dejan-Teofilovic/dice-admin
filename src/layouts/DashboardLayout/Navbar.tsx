@@ -14,7 +14,8 @@ import {
   Theme
 } from "@mui/material"
 import { Icon } from '@iconify/react'
-import { routes } from "../../Routes/routes";
+import { Link as RouterLink } from "react-router-dom"
+import { routes } from "../../Routes/routes"
 
 const drawerWidth = 240;
 
@@ -92,9 +93,9 @@ export default function Navbar() {
 
         <List>
           {routes.map(route => {
-            if (route.name && route.icon) {
+            if (route.name && route.icon && route.path) {
               return (
-                <ListItemButton key={route.path}>
+                <ListItemButton key={route.path} component={RouterLink} to={route.path}>
                   <ListItemIcon sx={{ fontSize: 24 }}>
                     <Icon icon={route.icon} />
                   </ListItemIcon>
