@@ -1,6 +1,8 @@
 import { createContext, useContext, useReducer } from 'react';
 import api from '../utils/api';
+import { ERROR, MESSAGE_ORDER_STATUS_UPDATE_FAILED, MESSAGE_ORDER_STATUS_UPDATE_SUCCESS, SUCCESS } from '../utils/constants';
 import { IOrder, IOrderStatus } from '../utils/interfaces';
+import { AlertMessageContext } from './AlertMessageContext';
 import { LoadingContext } from './LoadingContext';
 
 /* --------------------------------------------------------------- */
@@ -52,12 +54,15 @@ const reducer = (state: object, action: IAction) =>
 const OrdersContext = createContext({
   ...initialState,
   getAllOrdersAct: () => Promise.resolve(),
-  getAllOrderStatusesAct: () => Promise.resolve()
+  getAllOrderStatusesAct: () => Promise.resolve(),
+  changeOrderStatusAct: (orderId: number, orderStatusId: number) => Promise.resolve()
 });
 
 //  Provider
 function OrdersProvider({ children }: IProps) {
   const { openLoading, closeLoading } = useContext(LoadingContext);
+  const { openAlert } = useContext(AlertMessageContext);
+
   const [state, dispatch] = useReducer(reducer, initialState);
 
   const getAllOrdersAct = () => {
@@ -100,12 +105,46 @@ function OrdersProvider({ children }: IProps) {
       })
   }
 
+  const changeOrderStatusAct = (orderId: number, orderStatusId: number) => {
+    openLoading()
+    api.put(`/admin/change-order-status/${orderId}`, { orderStatusId })
+      .then(response => {
+        if (state.orders) {
+          const orders = [...state.orders]
+          for (let i = 0; i < orders.length; i += 1) {
+            if (orders[i].id === orderId) {
+              orders[i].id_order_status = orderStatusId
+              break
+            }
+          }
+          dispatch({
+            type: 'SET_ORDERS',
+            payload: orders
+          })
+          closeLoading()
+          openAlert({
+            severity: SUCCESS,
+            message: MESSAGE_ORDER_STATUS_UPDATE_SUCCESS
+          })
+        }
+      })
+      .catch(error => {
+        console.log('# error => ', error)
+        openAlert({
+          severity: ERROR,
+          message: MESSAGE_ORDER_STATUS_UPDATE_FAILED
+        })
+        closeLoading()
+      })
+  }
+
   return (
     <OrdersContext.Provider
       value={{
         ...state,
         getAllOrdersAct,
-        getAllOrderStatusesAct
+        getAllOrderStatusesAct,
+        changeOrderStatusAct
       }}
     >
       {children}

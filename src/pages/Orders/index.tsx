@@ -45,7 +45,7 @@ export default function Orders() {
               <TableBody>
                 {
                   orders.map((listItem, index) => (
-                    <OrderRow key={index} index={index} listItem={listItem} />
+                    <OrderRow key={listItem.id} index={index} listItem={listItem} />
                   ))
                 }
               </TableBody>

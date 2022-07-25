@@ -1,5 +1,4 @@
 import { Button, MenuItem, Paper, TableCell, TableRow, TextField } from "@mui/material"
-import { useEffect, useState } from "react";
 import useOrders from "../../hooks/useOrders";
 import { IOrder } from "../../utils/interfaces"
 
@@ -9,19 +8,13 @@ interface IProps {
 }
 
 export default function OrderRow({ listItem, index }: IProps) {
-  const { orderStatuses } = useOrders()
+  const { orderStatuses, changeOrderStatusAct } = useOrders()
 
-  const [statusId, setStatusId] = useState(0)
-
-  const handleChangeStatus = (value: string) => {
-    setStatusId(Number(value))
+  const handleChangeStatus = async (value: string) => {
+    changeOrderStatusAct(listItem.id, Number(value))
   }
-
-  useEffect(() => {
-    setStatusId(listItem.id_order_status)
-  }, [])
   return (
-    <TableRow key={listItem.id}>
+    <TableRow>
       <TableCell>{index + 1}</TableCell>
       <TableCell>{listItem.name}</TableCell>
       <TableCell>{listItem.email}</TableCell>
@@ -46,7 +39,7 @@ export default function OrderRow({ listItem, index }: IProps) {
           orderStatuses && (
             <TextField
               select
-              value={statusId}
+              value={listItem.id_order_status}
               onChange={(e) => handleChangeStatus(e.target.value)}
             >
               {
