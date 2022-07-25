@@ -14,10 +14,10 @@ import NoData from "../../components/NoData";
 import { NO_DATA } from "../../utils/constants";
 
 export default function WaitingList() {
-  const { waitingList, getAllWaitingList } = useWaitingList()
+  const { waitingList, getAllWaitingListAct } = useWaitingList()
 
   useEffect(() => {
-    getAllWaitingList()
+    getAllWaitingListAct()
   }, [])
 
   return (

@@ -8,6 +8,7 @@ import AlertMessage from './components/AlertMessage'
 import { LoadingProvider } from './contexts/LoadingContext';
 import { UserProvider } from './contexts/UserContext';
 import { WaitingListProvider } from './contexts/WaitingListContext';
+import { OrdersProvider } from './contexts/OrdersContext';
 
 let theme = createTheme({})
 theme = responsiveFontSizes(theme)
@@ -19,11 +20,13 @@ function App() {
         <LoadingProvider>
           <UserProvider>
             <WaitingListProvider>
-              <BrowserRouter>
-                <Routes />
-                <Loading />
-                <AlertMessage />
-              </BrowserRouter>
+              <OrdersProvider>
+                <BrowserRouter>
+                  <Routes />
+                  <Loading />
+                  <AlertMessage />
+                </BrowserRouter>
+              </OrdersProvider>
             </WaitingListProvider>
           </UserProvider>
         </LoadingProvider>

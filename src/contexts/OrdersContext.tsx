@@ -1,12 +1,13 @@
 import { createContext, useContext, useReducer } from 'react';
 import api from '../utils/api';
-import { IWaitListItem } from '../utils/interfaces';
+import { IOrder, IOrderStatus } from '../utils/interfaces';
 import { LoadingContext } from './LoadingContext';
 
 /* --------------------------------------------------------------- */
 
 interface IInitialState {
-  waitingList: Array<IWaitListItem> | null
+  orders: Array<IOrder> | null;
+  orderStatuses: Array<IOrderStatus> | null;
 }
 
 interface IAction {
@@ -25,14 +26,21 @@ interface IHandlers {
 /* --------------------------------------------------------------- */
 
 const initialState: IInitialState = {
-  waitingList: null
+  orders: null,
+  orderStatuses: null
 };
 
 const handlers: IHandlers = {
   SET_WAITING_LIST: (state: object, action: IAction) => {
     return {
       ...state,
-      waitingList: action.payload
+      orders: action.payload
+    };
+  },
+  SET_ORDER_STATUSES: (state: object, action: IAction) => {
+    return {
+      ...state,
+      orderStatuses: action.payload
     };
   }
 };
@@ -41,19 +49,20 @@ const reducer = (state: object, action: IAction) =>
   handlers[action.type] ? handlers[action.type](state, action) : state;
 
 //  Context
-const WaitingListContext = createContext({
+const OrdersContext = createContext({
   ...initialState,
-  getAllWaitingListAct: () => Promise.resolve(),
+  getAllOrdersAct: () => Promise.resolve(),
+  getAllOrderStatusesAct: () => Promise.resolve()
 });
 
 //  Provider
-function WaitingListProvider({ children }: IProps) {
+function OrdersProvider({ children }: IProps) {
   const { openLoading, closeLoading } = useContext(LoadingContext);
   const [state, dispatch] = useReducer(reducer, initialState);
 
-  const getAllWaitingListAct = () => {
+  const getAllOrdersAct = () => {
     openLoading()
-    api.get('/admin/get-all-waiting-list')
+    api.get('/admin/get-all-orders')
       .then(response => {
         if (response.data) {
           dispatch({
@@ -72,16 +81,36 @@ function WaitingListProvider({ children }: IProps) {
       })
   };
 
+  const getAllOrderStatusesAct = () => {
+    openLoading()
+    api.get('/admin/get-all-order-statuses')
+      .then(response => {
+        if (response.data) {
+          dispatch({
+            type: 'SET_ORDER_STATUSES',
+            payload: response.data
+          })
+        }
+      })
+      .catch(error => {
+        dispatch({
+          type: 'SET_ORDER_STATUSES',
+          payload: null
+        })
+      })
+  }
+
   return (
-    <WaitingListContext.Provider
+    <OrdersContext.Provider
       value={{
         ...state,
-        getAllWaitingListAct,
+        getAllOrdersAct,
+        getAllOrderStatusesAct
       }}
     >
       {children}
-    </WaitingListContext.Provider>
+    </OrdersContext.Provider>
   );
 }
 
-export { WaitingListContext, WaitingListProvider };
+export { OrdersContext, OrdersProvider };
