@@ -54,7 +54,6 @@ export default function Orders() {
         </Table>
         {!orders && (<NoData text={NO_DATA} />)}
       </TableContainer>
-
     </Box>
   )
 }

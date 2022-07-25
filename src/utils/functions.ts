@@ -26,3 +26,10 @@ export const setAuthToken = (token: string | null) => {
     localStorage.removeItem("token");
   }
 };
+
+export const stringToEllipsis = (str: string, length: number): string => {
+  if (str.length <= length) {
+    return str;
+  }
+  return `${str.slice(0, length)}...`;
+};

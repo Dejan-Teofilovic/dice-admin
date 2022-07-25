@@ -1,6 +1,11 @@
 import { createContext, useContext, useReducer } from 'react';
 import api from '../utils/api';
-import { ERROR, MESSAGE_ORDER_STATUS_UPDATE_FAILED, MESSAGE_ORDER_STATUS_UPDATE_SUCCESS, SUCCESS } from '../utils/constants';
+import {
+  ERROR,
+  MESSAGE_ORDER_STATUS_UPDATE_FAILED,
+  MESSAGE_ORDER_STATUS_UPDATE_SUCCESS,
+  SUCCESS
+} from '../utils/constants';
 import { IOrder, IOrderStatus } from '../utils/interfaces';
 import { AlertMessageContext } from './AlertMessageContext';
 import { LoadingContext } from './LoadingContext';
@@ -10,6 +15,7 @@ import { LoadingContext } from './LoadingContext';
 interface IInitialState {
   orders: Array<IOrder> | null;
   orderStatuses: Array<IOrderStatus> | null;
+  order: IOrder | null;
 }
 
 interface IAction {
@@ -29,7 +35,8 @@ interface IHandlers {
 
 const initialState: IInitialState = {
   orders: null,
-  orderStatuses: null
+  orderStatuses: null,
+  order: null
 };
 
 const handlers: IHandlers = {
@@ -44,7 +51,13 @@ const handlers: IHandlers = {
       ...state,
       orderStatuses: action.payload
     };
-  }
+  },
+  SET_ORDER: (state: object, action: IAction) => {
+    return {
+      ...state,
+      order: action.payload
+    };
+  },
 };
 
 const reducer = (state: object, action: IAction) =>
@@ -55,7 +68,9 @@ const OrdersContext = createContext({
   ...initialState,
   getAllOrdersAct: () => Promise.resolve(),
   getAllOrderStatusesAct: () => Promise.resolve(),
-  changeOrderStatusAct: (orderId: number, orderStatusId: number) => Promise.resolve()
+  changeOrderStatusAct: (orderId: number, orderStatusId: number) => Promise.resolve(),
+  getOrderByIdAct: (id: number) => Promise.resolve(),
+  clearOrderAct: () => Promise.resolve()
 });
 
 //  Provider
@@ -96,12 +111,14 @@ function OrdersProvider({ children }: IProps) {
             payload: response.data
           })
         }
+        closeLoading();
       })
       .catch(error => {
         dispatch({
           type: 'SET_ORDER_STATUSES',
           payload: null
         })
+        closeLoading()
       })
   }
 
@@ -121,12 +138,24 @@ function OrdersProvider({ children }: IProps) {
             type: 'SET_ORDERS',
             payload: orders
           })
-          closeLoading()
-          openAlert({
-            severity: SUCCESS,
-            message: MESSAGE_ORDER_STATUS_UPDATE_SUCCESS
+
+        }
+
+        if (state.order) {
+          dispatch({
+            type: 'SET_ORDER',
+            payload: {
+              ...state.order,
+              id_order_status: orderStatusId
+            }
           })
         }
+
+        closeLoading()
+        openAlert({
+          severity: SUCCESS,
+          message: MESSAGE_ORDER_STATUS_UPDATE_SUCCESS
+        })
       })
       .catch(error => {
         console.log('# error => ', error)
@@ -138,13 +167,44 @@ function OrdersProvider({ children }: IProps) {
       })
   }
 
+  const getOrderByIdAct = (id: number) => {
+    openLoading()
+    api.get(`/admin/get-order-by-id/${id}`)
+      .then(response => {
+        if (response.data) {
+          console.log('# response.data => ', response.data)
+          dispatch({
+            type: 'SET_ORDER',
+            payload: response.data
+          })
+        }
+        closeLoading()
+      })
+      .catch(error => {
+        dispatch({
+          type: 'SET_ORDER',
+          payload: null
+        })
+        closeLoading()
+      })
+  }
+
+  const clearOrderAct = () => {
+    dispatch({
+      type: 'SET_ORDER',
+      payload: null
+    })
+  }
+
   return (
     <OrdersContext.Provider
       value={{
         ...state,
         getAllOrdersAct,
         getAllOrderStatusesAct,
-        changeOrderStatusAct
+        changeOrderStatusAct,
+        getOrderByIdAct,
+        clearOrderAct
       }}
     >
       {children}

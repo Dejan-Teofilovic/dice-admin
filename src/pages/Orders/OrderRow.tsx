@@ -1,5 +1,7 @@
-import { Button, MenuItem, Paper, TableCell, TableRow, TextField } from "@mui/material"
-import useOrders from "../../hooks/useOrders";
+import { Button, Paper, TableCell, TableRow } from "@mui/material"
+import { Link as RouterLink, useLocation } from "react-router-dom";
+import SelectOrderStatus from "../../components/SelectOrderStatus";
+import { stringToEllipsis } from "../../utils/functions";
 import { IOrder } from "../../utils/interfaces"
 
 interface IProps {
@@ -8,18 +10,15 @@ interface IProps {
 }
 
 export default function OrderRow({ listItem, index }: IProps) {
-  const { orderStatuses, changeOrderStatusAct } = useOrders()
+  const { pathname } = useLocation();
 
-  const handleChangeStatus = async (value: string) => {
-    changeOrderStatusAct(listItem.id, Number(value))
-  }
   return (
     <TableRow>
       <TableCell>{index + 1}</TableCell>
       <TableCell>{listItem.name}</TableCell>
       <TableCell>{listItem.email}</TableCell>
       <TableCell>{listItem.wallet_address}</TableCell>
-      <TableCell>{listItem.message}</TableCell>
+      <TableCell>{stringToEllipsis(listItem.message, 5)}</TableCell>
       <TableCell>
         {listItem.nft_image && (
           <Paper
@@ -35,26 +34,10 @@ export default function OrderRow({ listItem, index }: IProps) {
       <TableCell>{listItem.goal_price}</TableCell>
       <TableCell>{listItem.income_price}</TableCell>
       <TableCell>
-        {
-          orderStatuses && (
-            <TextField
-              select
-              value={listItem.id_order_status}
-              onChange={(e) => handleChangeStatus(e.target.value)}
-            >
-              {
-                orderStatuses.map(statusItem => (
-                  <MenuItem key={statusItem.id} value={statusItem.id}>
-                    {statusItem.status}
-                  </MenuItem>
-                ))
-              }
-            </TextField>
-          )
-        }
+        <SelectOrderStatus orderId={listItem.id} orderStatusId={listItem.id_order_status} />
       </TableCell>
       <TableCell>
-        <Button variant="contained">
+        <Button variant="contained" component={RouterLink} to={`${pathname}/${listItem.id}`}>
           View
         </Button>
       </TableCell>
