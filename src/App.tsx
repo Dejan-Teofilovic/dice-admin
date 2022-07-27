@@ -10,7 +10,11 @@ import { UserProvider } from './contexts/UserContext';
 import { WaitingListProvider } from './contexts/WaitingListContext';
 import { OrdersProvider } from './contexts/OrdersContext';
 
-let theme = createTheme({})
+let theme = createTheme({
+  palette: {
+    mode: 'dark'
+  }
+})
 theme = responsiveFontSizes(theme)
 
 function App() {
