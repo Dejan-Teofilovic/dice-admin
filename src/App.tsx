@@ -9,6 +9,7 @@ import { LoadingProvider } from './contexts/LoadingContext';
 import { UserProvider } from './contexts/UserContext';
 import { WaitingListProvider } from './contexts/WaitingListContext';
 import { OrdersProvider } from './contexts/OrdersContext';
+import AuthGuard from './guards/AuthGuard';
 
 let theme = createTheme({
   palette: {
@@ -26,9 +27,11 @@ function App() {
             <WaitingListProvider>
               <OrdersProvider>
                 <BrowserRouter>
-                  <Routes />
-                  <Loading />
-                  <AlertMessage />
+                  <AuthGuard>
+                    <Routes />
+                    <Loading />
+                    <AlertMessage />
+                  </AuthGuard>
                 </BrowserRouter>
               </OrdersProvider>
             </WaitingListProvider>

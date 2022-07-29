@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useReducer } from 'react';
+import { useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import {
   ERROR,
@@ -7,11 +8,11 @@ import {
   MESSAGE_LOGIN_SUCCESS,
   SUCCESS,
 } from '../utils/constants';
-import { 
-  getItemOfLocalStorage, 
-  removeItemOfLocalStorage, 
-  setAuthToken, 
-  setItemOfLocalStorage 
+import {
+  getItemOfLocalStorage,
+  removeItemOfLocalStorage,
+  setAuthToken,
+  setItemOfLocalStorage
 } from '../utils/functions';
 import { ILoginInfo } from '../utils/interfaces';
 import { AlertMessageContext } from './AlertMessageContext';

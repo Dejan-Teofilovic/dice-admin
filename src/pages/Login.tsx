@@ -1,8 +1,10 @@
 import { Button, Card, CardContent, CardHeader, Stack, TextField } from "@mui/material";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import useUser from "../hooks/useUser";
 
 export default function Login() {
+  const navigate = useNavigate()
   const { login } = useUser()
 
   const [email, setEmail] = useState('')
@@ -10,6 +12,7 @@ export default function Login() {
 
   const handleSubmit = () => {
     login({ email, password })
+    navigate('/')
   }
 
   return (
