@@ -1,5 +1,5 @@
-import { useEffect, useMemo } from 'react';
-import { Navigate, useLocation, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { LOCALSTORAGE_TOKEN_NAME } from '../utils/constants';
 import { getItemOfLocalStorage } from '../utils/functions';
 
