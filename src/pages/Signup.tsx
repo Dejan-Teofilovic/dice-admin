@@ -1,11 +1,9 @@
 import { Box, Button, Card, CardContent, CardHeader, Grid, Stack, TextField } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
 import useUser from "../hooks/useUser";
 import { MESSAGE_FILL_IN_ALL_VALUES } from "../utils/constants";
 
 export default function Signup() {
-  const navigate = useNavigate()
   const { signup } = useUser()
 
   const [firstName, setFirstName] = useState('')
