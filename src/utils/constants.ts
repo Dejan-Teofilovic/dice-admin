@@ -14,5 +14,6 @@ export const MESSAGE_LOGIN_ERROR = "Login error.";
 export const MESSAGE_ORDER_STATUS_UPDATE_SUCCESS = "Status has been updated.";
 export const MESSAGE_ORDER_STATUS_UPDATE_FAILED =
   "Updating status has been failed";
+export const MESSAGE_FILL_IN_ALL_VALUES = 'Please fill in all values.'
 
 export const NO_DATA = "No Data.";

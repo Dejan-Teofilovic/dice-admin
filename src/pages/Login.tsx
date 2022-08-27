@@ -1,10 +1,9 @@
-import { Button, Card, CardContent, CardHeader, Stack, TextField } from "@mui/material";
+import { Button, Card, CardContent, CardHeader, Link, Stack, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import useUser from "../hooks/useUser";
 
 export default function Login() {
-  const navigate = useNavigate()
   const { login } = useUser()
 
   const [email, setEmail] = useState('')
@@ -12,14 +11,13 @@ export default function Login() {
 
   const handleSubmit = () => {
     login({ email, password })
-    navigate('/')
   }
 
   return (
     <Stack height="100vh" justifyContent="center" alignItems="center">
       <Card sx={{ width: { xs: '90%', sm: '50%', md: '30%' } }}>
         <CardHeader
-          title="Log in"
+          title="Login"
           titleTypographyProps={{ fontWeight: 800 }}
         />
         <CardContent sx={{ p: 3 }}>
@@ -41,6 +39,13 @@ export default function Login() {
             <Stack direction="row" justifyContent="end">
               <Button variant="contained" onClick={handleSubmit}>Login</Button>
             </Stack>
+
+            <Typography variant="body1">
+              Don't have an account?&nbsp;
+              <Link component={RouterLink} to="/signup">
+                Create a new one.
+              </Link>
+            </Typography>
           </Stack>
         </CardContent>
       </Card>

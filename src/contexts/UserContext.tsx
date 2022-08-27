@@ -13,7 +13,7 @@ import {
   setAuthToken,
   setItemOfLocalStorage
 } from '../utils/functions';
-import { ILoginInfo } from '../utils/interfaces';
+import { ILoginInfo, ISignupData } from '../utils/interfaces';
 import { AlertMessageContext } from './AlertMessageContext';
 import { LoadingContext } from './LoadingContext';
 
@@ -56,6 +56,8 @@ const reducer = (state: object, action: IAction) =>
 const UserContext = createContext({
   ...initialState,
   login: (loginInfo: ILoginInfo) => Promise.resolve(),
+  logout: () => Promise.resolve(),
+  signup: (signupData: ISignupData) => Promise.resolve()
 });
 
 //  Provider
@@ -108,11 +110,42 @@ function UserProvider({ children }: IProps) {
       })
   }
 
+  const signup = (signupData: ISignupData) => {
+    openLoading()
+    api.post('/admin/signup', signupData)
+      .then(response => {
+        if (response.data) {
+          setItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME, response.data)
+          dispatch({
+            type: 'SET_TOKEN',
+            payload: response.data
+          })
+          closeLoading()
+          openAlert({ severity: SUCCESS, message: MESSAGE_LOGIN_SUCCESS })
+        }
+      })
+      .catch(error => {
+        closeLoading()
+        openAlert({ severity: ERROR, message: error.response.data })
+      })
+  }
+
+  const logout = () => {
+    removeItemOfLocalStorage(LOCALSTORAGE_TOKEN_NAME)
+    dispatch({
+      type: 'SET_TOKEN',
+      payload: ''
+    })
+    setAuthToken(null)
+  }
+
   return (
     <UserContext.Provider
       value={{
         ...state,
         login,
+        signup,
+        logout
       }}
     >
       {children}

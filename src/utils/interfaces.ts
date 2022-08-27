@@ -33,3 +33,14 @@ export interface IOrderStatus {
   id: number;
   status: string;
 }
+
+export interface IUserdata {
+  firstName: string;
+  lastName: string;
+  email: string;
+}
+
+export interface ISignupData extends IUserdata {
+  password: string;
+  adminPassword: string;
+}

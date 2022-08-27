@@ -16,6 +16,7 @@ import {
 import { Icon } from '@iconify/react'
 import { Link as RouterLink } from "react-router-dom"
 import { routes } from "../../Routes/routes"
+import useUser from "../../hooks/useUser";
 
 const drawerWidth = 240;
 
@@ -58,6 +59,7 @@ const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' 
 );
 
 export default function Navbar() {
+  const { logout } = useUser();
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {
@@ -67,6 +69,10 @@ export default function Navbar() {
   const handleDrawerClose = () => {
     setOpen(false)
   };
+
+  const handleSignout = () => {
+    logout()
+  }
 
   return (
     <Drawer variant="permanent" open={open}>
@@ -86,7 +92,6 @@ export default function Navbar() {
               </IconButton>
             )
           }
-
         </Stack>
 
         <Divider />
@@ -107,6 +112,17 @@ export default function Navbar() {
               <Fragment key={route.path} />
             )
           })}
+        </List>
+
+        <Divider />
+
+        <List>
+          <ListItemButton onClick={handleSignout}>
+            <ListItemIcon sx={{ fontSize: 24 }}>
+              <Icon icon="oi:account-logout" />
+            </ListItemIcon>
+            <ListItemText>Sign out</ListItemText>
+          </ListItemButton>
         </List>
       </Stack>
     </Drawer>
